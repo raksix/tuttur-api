@@ -21,6 +21,8 @@ const start = async () => {
       args: ['--no-sandbox'],
       timeout: 0
    })
+
+
 }
 
 app.get('/', (req, res) => {
@@ -29,8 +31,50 @@ app.get('/', (req, res) => {
       message: 'raksix >>> alls',
       endpoints: [
          "/tr/league/super",
-         "/tr/league/first"
+         "/tr/league/first",
+         "/get/result/:id?date=3-5-1907"
       ]
+   })
+})
+
+app.get('/get/result/:id', async (req, res) => {
+   const { date } = req.query
+   const resp = await axios.get('https://statistics.iddaa.com/broadage/getEventListCache?SportId=1&SearchDate=' + date).catch(err => {
+      return res.json({
+         error: true,
+         message: 'Tarih giriniz'
+      })
+   })
+   const result = resp?.data?.data?.matches?.find(a => a?.sc?.id === Number(req.params.id))
+
+   if(!result?.sgId) return res.json({
+      error: true,
+      message: 'Maç bulunamadı!'
+   });
+
+   const match_result = {
+      id: result.sgId,
+      team_first: {
+         name: result.ht.n,
+         goal: result.sc.ht.r,
+         goal_c: result.sc.ht.c,
+         yellow_card: result.sc.ht.yc,
+         red_card: result.sc.ht.rc
+      },
+      team_second: {
+         name: result.at.n,
+         goal: result.sc.at.r,
+         goal_c: result.sc.at.c,
+         yellow_card: result.sc.at.yc,
+         red_card: result.sc.at.rc
+      },
+      date: moment(result.d).format("YYYY-MM-DD"),
+      hour: moment(result.d).format("HH:mm")
+   }
+
+   return res.json({
+      error: false,
+      result: match_result
    })
 })
 
@@ -63,7 +107,8 @@ app.get('/tr/league/super', async (req, res) => {
 
          const match = {
             index: idx,
-            date: moment(a.d * 1000).format('DD/MM/YYYY'),
+            id: a.i,
+            date: moment(a.d * 1000).format('YYYY-MM-DD'),
             hour: moment(a.d * 1000).format('HH:mm'),
             team_first: a.hn,
             team_second: a.an,
