@@ -17,10 +17,11 @@ const start = async () => {
    await start_browser({
       headless: true,
       args: ['--no-sandbox'],
-   })
+      timeout: 0
+   }) 
 }
 
-app.get('/', (req, res) => {
+app.get('/', (req, res) => {  
    res.json({
       error: false,
       message: 'raksix >>> alls',
@@ -28,7 +29,7 @@ app.get('/', (req, res) => {
          "/tr/league/super",
          "/tr/league/first"
       ]
-   })
+   }) 
 })
 
 app.get('/tr/league/super', async (req, res) => {
