@@ -16,7 +16,7 @@ const ligs = {
 const start = async () => {
    await start_browser({
       headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      args: ['--no-sandbox'],
    })
 }
 
