@@ -31,7 +31,10 @@ app.get('/', (req, res) => {
 })
 
 app.get('/tr/league/super', async (req, res) => {
-   const browser = get_browser()
+   const browser = get_browser({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+   })
 
    if(!browser) return res.json({
       error: true,
@@ -90,8 +93,11 @@ app.get('/tr/league/super', async (req, res) => {
 })
 
 app.get('/tr/league/first', async (req, res) => {
-   const browser = get_browser()
-
+   const browser = get_browser({
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
+   })
+   
    if(!browser) return res.json({
       error: true,
       message: 'Browser Bulunamadı'
