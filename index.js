@@ -15,7 +15,8 @@ const ligs = {
 
 const start = async () => {
    await start_browser({
-      headless: true
+      headless: true,
+      args: ['--no-sandbox', '--disable-setuid-sandbox'],
    })
 }
 
@@ -31,12 +32,9 @@ app.get('/', (req, res) => {
 })
 
 app.get('/tr/league/super', async (req, res) => {
-   const browser = get_browser({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-   })
+   const browser = get_browser()
 
-   if(!browser) return res.json({
+   if (!browser) return res.json({
       error: true,
       message: 'Browser Bulunamadı'
    })
@@ -56,7 +54,7 @@ app.get('/tr/league/super', async (req, res) => {
       const html = cheerio.load(body);
 
       const all_matchs = []
-   
+
       html(elements.leageus.main).children('div').each((idx, element) => {
          var el = cheerio.load(element)
          const match = {
@@ -74,7 +72,7 @@ app.get('/tr/league/super', async (req, res) => {
             is_kg: el('div').children(elements.matchs.childrens.is_kg).first().text(),
             is_not_kg: el('div').children(elements.matchs.childrens.is_not_kg).first().text(),
          }
-   
+
          all_matchs.push(match)
       })
 
@@ -93,12 +91,9 @@ app.get('/tr/league/super', async (req, res) => {
 })
 
 app.get('/tr/league/first', async (req, res) => {
-   const browser = get_browser({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-   })
-   
-   if(!browser) return res.json({
+   const browser = get_browser()
+
+   if (!browser) return res.json({
       error: true,
       message: 'Browser Bulunamadı'
    })
@@ -118,7 +113,7 @@ app.get('/tr/league/first', async (req, res) => {
       const html = cheerio.load(body);
 
       const all_matchs = []
-   
+
       html(elements.leageus.main).children('div').each((idx, element) => {
          var el = cheerio.load(element)
          const match = {
@@ -136,7 +131,7 @@ app.get('/tr/league/first', async (req, res) => {
             is_kg: el('div').children(elements.matchs.childrens.is_kg).first().text(),
             is_not_kg: el('div').children(elements.matchs.childrens.is_not_kg).first().text(),
          }
-   
+
          all_matchs.push(match)
       })
 
@@ -160,4 +155,4 @@ const port = process.env.port || 1337
 
 app.listen(port, () => {
    console.log(`Example app listening on port ${port}`)
- })
+})
